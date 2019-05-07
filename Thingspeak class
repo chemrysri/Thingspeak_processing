@@ -30,9 +30,10 @@ class Thinkspeak {
     }
     uri += " HTTP/1.1\n"; 
     print(uri);
-    if (server.active() == true) { // If there's incoming data from the client...
+    if (server.active() == true) 
+    { // If there's incoming data from the client...
       server.write(uri);  
-      server.write("Host: blablbablba.bla\n\n"); // Be polite and say who we are
+      server.write("Host: blablbablba.bla\n\n"); 
     } 
     delay(61250);
     server.stop();
