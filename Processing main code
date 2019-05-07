@@ -15,7 +15,7 @@ Thinkspeak test;
 
 String server = "api.thingspeak.com";
 // replace your key by usr thinkspeak channel key 
-String apiKey = "SONJXMHY78XSYVBY";
+String apiKey = "Provide your Thingspeak API key";
 
 
 void setup()
