@@ -1,0 +1,69 @@
+// Processing main code
+import processing.net.*;
+import processing.serial.*;
+
+Serial myPort;                       // The serial port
+
+final int SENSORCOUNT = 3;         // This value must match SENSORCOUNT in Arduino Code i.e. number of values to be sent
+
+
+String sensorValues[] = new String[SENSORCOUNT];
+String junk;
+String beginString = "begin";
+
+Thinkspeak test;
+
+String server = "api.thingspeak.com";
+// replace your key by usr thinkspeak channel key 
+String apiKey = "SONJXMHY78XSYVBY";
+
+
+void setup()
+{
+  // Print a list of the serial ports, for debugging purposes:
+  println(Serial.list());
+
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName , 9600);
+  test = new Thinkspeak(SENSORCOUNT);
+  test.set(0, 3);
+  test.set(0, 10);
+}
+int idx = SENSORCOUNT + 2;
+
+void draw() {
+  if (myPort.available() > 0)
+  {
+  junk = null;
+  junk = myPort.readStringUntil('\n');
+
+  // look for the initial "begin" string that Arduino sends
+  if (junk != null)
+  {
+  if (beginString.equals(trim(junk)))
+  {
+  junk = null;
+  idx=0;
+  }
+  }
+
+  //Read each sensor value
+  if ((junk != null) && (idx < SENSORCOUNT))
+  {
+  sensorValues[idx] = junk;
+  junk = null;
+  idx++;
+  }
+  if (idx == SENSORCOUNT)
+  {
+  for (int index = 0; index < SENSORCOUNT; index++)
+  {
+  test.set(index, float(sensorValues[index]));
+  }
+  
+  Client myClient = new Client(this, server, 80); // Connect to server on port 80
+  test.update(myClient, apiKey);
+  delay(20000);
+}
+ }
+}
